@@ -1,4 +1,4 @@
-Todo List App
+format this readme to have heading fonts: Todo List App
 Simple Flask todo app that stores tasks in your browser's local storage.
 
 User Role
@@ -22,3 +22,7 @@ Mark tasks as complete
 
 No login required - data stays in your browser
 
+Instructions (How To Run In Terminal):
+
+pip install flask
+python app.py
