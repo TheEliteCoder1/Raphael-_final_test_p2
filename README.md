@@ -24,5 +24,5 @@ No login required - data stays in your browser
 
 # Instructions (How To Run In Terminal):
 
-pip install flask
+pip install flask\
 python app.py
