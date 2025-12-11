@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Todo List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .input-area {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        input {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .task {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .delete-btn {
+            background: #dc3545;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        .empty {
+            text-align: center;
+            color: #666;
+            padding: 20px;
+        }
+        .task-text {
+            cursor: pointer;
+        }
+        .completed {
+            text-decoration: line-through;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <h1>Todo List</h1>
+    
+    <div class="input-area">
+        <input type="text" id="taskInput" placeholder="What needs to be done?">
+        <button onclick="addTask()">Add Task</button>
+    </div>
+    
+    <div id="taskList">
+        <!-- Tasks appear here -->
+    </div>
+
+    <script>
+        // Get tasks from localStorage or start with empty array
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        
+        // Display tasks when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            showTasks();
+        });
+        
+        // Add new task
+        function addTask() {
+            const input = document.getElementById('taskInput');
+            const text = input.value.trim();
+            
+            if (!text) return;
+            
+            const task = {
+                id: Date.now(),
+                text: text,
+                completed: false
+            };
+            
+            tasks.push(task);
+            saveTasks();
+            showTasks();
+            input.value = '';
+            input.focus();
+        }
+        
+        // Delete task
+        function deleteTask(id) {
+            if (confirm('Delete this task?')) {
+                tasks = tasks.filter(task => task.id !== id);
+                saveTasks();
+                showTasks();
+            }
+        }
+        
+        // Toggle completed status
+        function toggleTask(id) {
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                task.completed = !task.completed;
+                saveTasks();
+                showTasks();
+            }
+        }
+        
+        // Display all tasks
+        function showTasks() {
+            const container = document.getElementById('taskList');
+            
+            if (tasks.length === 0) {
+                container.innerHTML = '<div class="empty">No tasks yet. Add one above!</div>';
+                return;
+            }
+            
+            let html = '';
+            tasks.forEach(task => {
+                html += `
+                    <div class="task">
+                        <span class="task-text ${task.completed ? 'completed' : ''}" 
+                              onclick="toggleTask(${task.id})">
+                            ${task.text}
+                        </span>
+                        <button class="delete-btn" onclick="deleteTask(${task.id})">
+                            Delete
+                        </button>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        // Save tasks to localStorage
+        function saveTasks() {
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+        
+        // Allow pressing Enter to add task
+        document.getElementById('taskInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addTask();
+            }
+        });
+    </script>
+</body>
+</html>
